@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Upload OTA Firmware</title>
+        <!--<script type = "application/javascript" src = "ota.html" ></script>-->
+    </head>
+    <body>
+        <script>
+            console.log("hello!");
+
+            var ota_path = "/ota_upload"
+
+            function upload() {
+                var file_input = document.getElementById("firmware_file").files; 
+
+                var xhttp = new XMLHttpRequest();
+
+                xhttp.open("POST", ota_path, true);
+                xhttp.send(file_input[0]);
+            }
+        </script>
+        <h1>Upload Device Firmware For OTA Update</h1>
+        <div class = "upload_area">
+            <input type="file" id="firmware_file">
+            <button id = "upload_button" onclick = "upload()">Upload</button>
+        </div>
+    </body>
+</html>
