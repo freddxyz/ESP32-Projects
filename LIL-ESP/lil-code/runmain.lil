@@ -1,0 +1,2 @@
+print "running main.lil"
+source "/storage/main.lil"

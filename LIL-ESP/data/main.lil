@@ -1,6 +1,5 @@
-
 for {set x 1} {$x < 5} {inc x} {
     print $x
 }
 
-print "Loop ran!"
+print "Loop ran"

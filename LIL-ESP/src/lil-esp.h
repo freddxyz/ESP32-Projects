@@ -6,6 +6,7 @@
 extern char *TAG;
 
 void wifi_sta_init(void);
+void wifi_softap_init(void);
 esp_err_t mount_storage(void);
 httpd_handle_t start_http_server(void);
 void execute_lil_file(FILE *fstream);

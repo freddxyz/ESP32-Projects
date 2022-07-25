@@ -154,10 +154,15 @@ httpd_handle_t start_http_server(void)
 
     httpd_config_t server_config = HTTPD_DEFAULT_CONFIG();
     server_config.uri_match_fn = httpd_uri_match_wildcard;
-    if (httpd_start(&server, &server_config) == ESP_OK) {
+    ESP_LOGI(TAG, "starting http server...");
+    esp_err_t err = httpd_start(&server, &server_config);
+    if (err == ESP_OK) {
         httpd_register_uri_handler(server, &uri_get);
         httpd_register_uri_handler(server, &uri_post_upload);
         httpd_register_uri_handler(server, &uri_execute_post);
+        ESP_LOGI(TAG, "started server successfully!");
+    } else {
+        ESP_LOGI(TAG, "Failed to start server: %s", esp_err_to_name(err));
     }
 
     return server;

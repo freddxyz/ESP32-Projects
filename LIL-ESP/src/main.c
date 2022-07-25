@@ -43,7 +43,7 @@ void app_main()
 {
     nvs_flash_init();
     mount_storage();
-    wifi_sta_init();
+    wifi_softap_init();
     start_http_server();
 
     FILE *lil_main_filestream = fopen("/storage/main.lil", "r");
