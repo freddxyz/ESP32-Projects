@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Upload Or Update Files</title>
+        <style>
+            body {
+                background-color: black;
+                color: white;
+                font-family: 'Trebuchet MS', sans-serif;
+            }
+            button {
+                background-color: white;
+                color: black;  
+            }
+            .title{
+                text-align: center;
+            }
+            .upload_div {
+                background-color: rgb(56, 171, 133);
+                text-align: center;
+                margin-left: 25%;
+                margin-right: 25%;
+                font-size: large;
+            }
+            .execute_div {
+                background-color: rgb(56, 171, 133);
+                margin-left: 25%;
+                margin-right: 25%;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 class = "title">LIL-ESP: Upload File</h1>
+        <div class="upload_div">
+            <h1>Select File</h2>
+            <input type = "file" id = "upload_input">
+            <br>
+            <button onclick = "upload_file()">Upload</button>
+        </div>
+        <div class = "execute_div">
+            <h1>Execute LIL Script</h1>
+            <input id = "execute_file_name" type = "text">
+            <button class = "execute_button" onclick = "execute_request()">Execute</button>
+        </div>
+        <script>
+            var upload_base_path = "/upload/"
+            var execute_base_path = "/execute/"
+
+            function upload_file() {
+                var file_input = document.getElementById("upload_input").files; 
+
+                var xhttp = new XMLHttpRequest();
+
+                xhttp.open("POST", upload_base_path + file_input[0].name, true);
+                xhttp.send(file_input[0]);
+            }
+
+            function execute_request() {
+                var file_name = document.getElementById("execute_file_name").value;
+
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("POST", execute_base_path + file_name);
+                xhttp.send("Execute");
+            }
+        </script>
+    </body>
+</html>

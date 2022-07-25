@@ -2192,11 +2192,11 @@ static LILCALLBACK lil_value_t fnc_enveval(lil_t lil, size_t argc, lil_value_t* 
     lil_list_t invars = NULL;
     lil_list_t outvars = NULL;
     lil_value_t* varvalues = NULL;
-    int codeindex = 0; //Initialized codeindex to 0 because of some error.
+    int codeindex;
     size_t i;
     if (argc < 1) return NULL;
-    if (argc == 1) codeindex = 0;
-    else if (argc >= 2) {
+    else if (argc == 1) codeindex = 0;
+    else { // if (argc >= 2) {
         invars = lil_subst_to_list(lil, argv[0]);
         varvalues = malloc(sizeof(lil_value_t)*lil_list_size(invars));
         for (i=0; i<lil_list_size(invars); i++)

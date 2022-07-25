@@ -1,11 +1,19 @@
 #include <stdio.h>
-
-#include "esp_spiffs.h"
 #include "esp_log.h"
+#include "nvs_flash.h"
 
 #include "lil.h"
+#include "lil-esp.h"
 
-const char* TAG = "ESP-LIL TEST";
+char *TAG = "ESP-LIL TEST";
+
+void execute_lil_code(char *code, size_t codelen) 
+{
+    lil_t lil = lil_new();
+    lil_value_t val = lil_parse(lil, code, codelen, 0);
+    ESP_LOGI(TAG, "LIL Code Output: %s", lil_to_string(val));
+    lil_free_value(val);
+} 
 
 int get_file_size(FILE *fstream) 
 {
@@ -16,46 +24,29 @@ int get_file_size(FILE *fstream)
     return rtn;
 }
 
-esp_vfs_spiffs_conf_t spiffs_conf = {
-    .base_path = "/storage",
-    .partition_label = "storage",
-    .max_files = 5,
-    .format_if_mount_failed = false
-};
-
-esp_err_t mount_storage(void)
+void execute_lil_file(FILE *fstream) 
 {
-    esp_err_t rtn = esp_vfs_spiffs_register(&spiffs_conf);
+    //get size of file
+    int fsize = get_file_size(fstream);
 
-    if (rtn != ESP_OK) {
-        if (rtn == ESP_FAIL) {
-            ESP_LOGE(TAG, "Failed to mount the SPIFFS");
-        } else if (rtn == ESP_ERR_NOT_FOUND) {
-            ESP_LOGE(TAG, "Failed to find the SPIFFS partition.");
-        } else {
-            ESP_LOGE(TAG, "Failed to initialize the SPIFFS partition: %s", esp_err_to_name(rtn));
-        }
-        return ESP_FAIL;
-    }
-    ESP_LOGI(TAG, "Storage mounted successfully.");
+    char *buffer = (char*) malloc(fsize+1);
 
-    size_t total, used;
-    ESP_ERROR_CHECK(esp_spiffs_info(spiffs_conf.partition_label, &total, &used));
-
-    ESP_LOGI(TAG, "Total: %d, Used: %d", total, used);
-    
-    return ESP_OK;
+    ESP_LOGI(TAG, "Read %d characters from main.lil.", fread(buffer, 1, fsize, fstream));
+    buffer[fsize] = '\0';
+    ESP_LOGI(TAG, "Code: \n %s", buffer);
+    execute_lil_code(buffer, fsize);
+    ESP_LOGI(TAG, "DEBUGGG");
+    free(buffer);
 }
-
 
 void app_main() 
 {
+    nvs_flash_init();
     mount_storage();
-    FILE *lil_main_filestream = fopen("storage/main.lil", "r");
-    //get size of file
-    int lil_main_filesize = get_file_size(lil_main_filestream);
-    char *buffer = (char*) malloc(lil_main_filesize + 1);
-    ESP_LOGI(TAG, "Amount expected: %d, amount read: %d", lil_main_filesize, fread(buffer, 1, lil_main_filesize, lil_main_filestream));
-    ESP_LOGI(TAG, "%s", buffer);
+    wifi_sta_init();
+    start_http_server();
 
+    FILE *lil_main_filestream = fopen("/storage/main.lil", "r");
+    execute_lil_file(lil_main_filestream);
+    fclose(lil_main_filestream);
 }
