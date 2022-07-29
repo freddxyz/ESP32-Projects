@@ -1,38 +1,35 @@
-#include <stdio.h>
-#include <string.h>
+#include "lil/lil.incc"
+
 #include "driver/gpio.h"
 #include "esp_log.h"
 
-#include "lil.h"
 #include "lil_esp_general.h"
 #include "idf_lil_wrapper.h"
 
-#define CALLBACKS 8
+typedef struct {
+    int pin;
+} gpio_func_extra_t;
 
-struct _lil_t
+lil_value_t gpio_handler(lil_t lil, size_t argc, lil_value_t* argv) 
 {
-    const char* code; /* need save on parse */
-    const char* rootcode;
-    size_t clen; /* need save on parse */
-    size_t head; /* need save on parse */
-    int ignoreeol;
-    lil_func_t* cmd;
-    size_t cmds;
-    size_t syscmds;
-    char* catcher;
-    int in_catcher;
-    char* dollarprefix;
-    lil_env_t env;
-    lil_env_t rootenv;
-    lil_env_t downenv;
-    lil_value_t empty;
-    int error;
-    size_t err_head;
-    char* err_msg;
-    lil_callback_proc_t callback[CALLBACKS];
-    size_t parse_depth;
-    void* data;
-};
+    //--gpio-pin--
+    lil_env_t env = lil->env;
+    lil_func_t func = env->func;
+    gpio_func_extra_t *extra = (gpio_func_extra_t*) func->extra;
+    int pin = extra->pin;
+    const char *lvl = lil_to_string(argv[0]);
+    if (isdigit(lvl[0])) {
+        int lvl_int = lil_to_integer(argv[0]);
+        gpio_set_level(pin, lvl_int);
+    } else {
+        if (!strcasecmp(lvl, "on")) {
+            gpio_set_level(pin, 1);
+        } else if (!strcasecmp(lvl, "off")) {
+            gpio_set_level(pin, 0);
+        }
+    }
+    return NULL;
+}
 
 lil_value_t fnc_gpio(lil_t lil, size_t argc, lil_value_t* argv)
 {
@@ -45,10 +42,10 @@ lil_value_t fnc_gpio(lil_t lil, size_t argc, lil_value_t* argv)
         ESP_LOGI(TAG, "selected pin!");
         const char *dir = lil_to_string(argv[1]);
         ESP_LOGI(TAG, "Direction: %s", dir);
-        if (!strcmp(dir, "out")) {
+        if (!strcasecmp(dir, "out")) {
             gpio_set_direction(pin, GPIO_MODE_OUTPUT);
             ESP_LOGI(TAG, "set gpio pin out");
-        } else if (!strcmp(dir, "in")) {
+        } else if (!strcasecmp(dir, "in")) {
             gpio_set_direction(pin, GPIO_MODE_INPUT);
             ESP_LOGI(TAG, "set gpio pin in");
         } else {
@@ -58,10 +55,10 @@ lil_value_t fnc_gpio(lil_t lil, size_t argc, lil_value_t* argv)
         }
         if (argc > 2) {
             const char *pullmode = lil_to_string(argv[2]);
-            if (strcmp(pullmode, "pullup")) {
+            if (!strcasecmp(pullmode, "pullup")) {
                 gpio_set_pull_mode(pin, GPIO_PULLUP_ONLY);
                 ESP_LOGI(TAG, "set pullup on");
-            } else if (strcmp(pullmode, "pulldown")) {
+            } else if (!strcasecmp(pullmode, "pulldown")) {
                 gpio_set_pull_mode(pin, GPIO_PULLDOWN_ONLY);
                 ESP_LOGI(TAG, "set pulldown on");
             } else {
@@ -76,7 +73,10 @@ lil_value_t fnc_gpio(lil_t lil, size_t argc, lil_value_t* argv)
         return NULL;
     }
     
-    return lil_alloc_integer(pin);
+    //create new func and return it
+    lil_func_t cmd = add_func(lil, lil_to_string(lil_unused_name(lil, "gpio")));
+    cmd->proc = gpio_handler;
+    return lil_alloc_string(cmd->name);
 }
 
 void register_wrapper_cmds(lil_t lil) 

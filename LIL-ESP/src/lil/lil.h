@@ -100,7 +100,6 @@ LILAPI const char* lil_to_string(lil_value_t val);
 LILAPI double lil_to_double(lil_value_t val);
 LILAPI lilint_t lil_to_integer(lil_value_t val);
 LILAPI int lil_to_boolean(lil_value_t val);
-LILAPI int get_lil_error(lil_t lil);
 
 LILAPI lil_value_t lil_alloc_string(const char* str);
 LILAPI lil_value_t lil_alloc_double(double num);
@@ -138,5 +137,6 @@ LILAPI lil_value_t lil_arg(lil_value_t* argv, size_t index);
 
 LILAPI void lil_set_data(lil_t lil, void* data);
 LILAPI void* lil_get_data(lil_t lil);
+
 
 #endif

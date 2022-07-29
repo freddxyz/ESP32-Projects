@@ -2,7 +2,6 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 
-#include "lil.h"
 #include "idf_lil_wrapper.h"
 #include "lil_esp_general.h"
 
@@ -13,7 +12,7 @@ void handle_exit(lil_t lil, lil_value_t arg)
     if (arg) {
         ESP_LOGI(TAG, "Exited lil script. Args: %s", lil_to_string(arg));
     }
-    ESP_LOGI(TAG, "Exited lil script. Current lil_error: %d", get_lil_error(lil));
+    ESP_LOGI(TAG, "Exited lil script");
 }
 
 void handle_error(lil_t lil, size_t pos, const char* msg) 

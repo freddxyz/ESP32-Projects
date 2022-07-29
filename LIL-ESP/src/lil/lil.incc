@@ -27,7 +27,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#include "lil.h"
+#include "lil/lil.h"
 
 /* Visual C++ does not have atoll */
 #ifdef _MSC_VER
