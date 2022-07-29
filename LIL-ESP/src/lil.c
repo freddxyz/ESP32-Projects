@@ -1843,6 +1843,11 @@ int lil_to_boolean(lil_value_t val)
     return 0;
 }
 
+int get_lil_error(lil_t lil) 
+{
+    return lil->error;
+}
+
 lil_value_t lil_alloc_string(const char* str)
 {
     return alloc_value(str);

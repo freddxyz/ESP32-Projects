@@ -1,7 +1,7 @@
 #include "esp_spiffs.h"
 #include "esp_log.h"
 
-#include "lil-esp.h"
+#include "lil_esp_general.h"
 
 esp_vfs_spiffs_conf_t spiffs_conf = {
     .base_path = "/storage",

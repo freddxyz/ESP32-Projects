@@ -1,0 +1,3 @@
+set light [gpio 13 out]
+
+$light on

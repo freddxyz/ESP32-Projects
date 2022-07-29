@@ -3,14 +3,43 @@
 #include "nvs_flash.h"
 
 #include "lil.h"
-#include "lil-esp.h"
+#include "idf_lil_wrapper.h"
+#include "lil_esp_general.h"
 
 char *TAG = "ESP-LIL TEST";
+
+void handle_exit(lil_t lil, lil_value_t arg) 
+{
+    if (arg) {
+        ESP_LOGI(TAG, "Exited lil script. Args: %s", lil_to_string(arg));
+    }
+    ESP_LOGI(TAG, "Exited lil script. Current lil_error: %d", get_lil_error(lil));
+}
+
+void handle_error(lil_t lil, size_t pos, const char* msg) 
+{
+    ESP_LOGI(TAG, "Error in LIL code: %s", msg);
+}
 
 void execute_lil_code(char *code, size_t codelen) 
 {
     lil_t lil = lil_new();
-    lil_value_t val = lil_parse(lil, code, codelen, 0);
+
+    register_wrapper_cmds(lil);
+
+    lil_callback(
+        lil,
+        LIL_CALLBACK_EXIT, 
+        (lil_callback_proc_t)handle_exit
+    );
+    
+    lil_callback(
+        lil,
+        LIL_CALLBACK_ERROR, 
+        (lil_callback_proc_t)handle_error
+    );
+
+    lil_value_t val = lil_parse(lil, code, codelen, 1);
     ESP_LOGI(TAG, "LIL Code Output: %s", lil_to_string(val));
     lil_free_value(val);
 } 
@@ -35,7 +64,6 @@ void execute_lil_file(FILE *fstream)
     buffer[fsize] = '\0';
     ESP_LOGI(TAG, "Code: \n %s", buffer);
     execute_lil_code(buffer, fsize);
-    ESP_LOGI(TAG, "DEBUGGG");
     free(buffer);
 }
 

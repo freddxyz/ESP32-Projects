@@ -1,0 +1,24 @@
+print hello
+
+func gpio {cmd pin} {
+	if {expr [$cmd == "set"]} {
+		#use some c function
+		return $pin
+	}
+	if {expr [$cmd == "direction]} {
+		#use some c function
+	}
+}
+
+
+
+set light [gpio set 1]
+
+print $light
+
+
+func test args {
+	print [index $args 1]
+}
+
+test "bruh"

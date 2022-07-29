@@ -1,0 +1,15 @@
+func t args {
+	foreach i $args {
+		print $i
+	}
+}
+
+t "a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z"
+
+func foo args { 
+	foreach $args { 
+		print arg: $i 
+	} 
+}
+
+foo these are a few arguments

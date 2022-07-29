@@ -1,0 +1,9 @@
+print [catcher]
+catcher {
+	set name [index $args 0]
+	set value [index $args 1]
+	print $name
+	print $value
+}
+
+unknown "cool"

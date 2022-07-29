@@ -4,7 +4,7 @@
 #include "esp_netif.h"
 #include "esp_log.h"
 
-#include "lil-esp.h"
+#include "lil_esp_general.h"
 
 EventGroupHandle_t wifi_event_group;
 

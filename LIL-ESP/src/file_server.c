@@ -4,7 +4,7 @@
 #include "esp_vfs.h"
 #include "esp_log.h"
 
-#include "lil-esp.h"
+#include "lil_esp_general.h"
 
 #define MAX_PATH_LENGTH (ESP_VFS_PATH_MAX + CONFIG_SPIFFS_OBJ_NAME_LEN)
 #define REQUEST_CHUNK_SIZE 1024
@@ -20,7 +20,6 @@ void get_path_from_uri(const char *uri, char *buf)
 int file_has_extention(const char *filename, const char *extention) 
 {
     int test = strcasecmp(&filename[strlen(filename) - strlen(extention)],extention);
-    ESP_LOGI(TAG, "File Extention: %s", &filename[strlen(filename) - strlen(extention)]);
     return (test == 0);
 }
 
@@ -34,7 +33,6 @@ esp_err_t set_content_type_from_file(httpd_req_t *req, const char *filename)
         return httpd_resp_set_type(req, "application/javascript");
     };
     ESP_LOGI(TAG, "plain");
-    ESP_LOGI(TAG, "Extention:%s, compared to:%s", &filename[strlen(filename) - sizeof(".html") + 1], ".html");
     return httpd_resp_set_type(req, "text/plain");
 }
 

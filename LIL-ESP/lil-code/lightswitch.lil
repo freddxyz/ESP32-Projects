@@ -1,0 +1,3 @@
+set light [gpio 1]
+light direction out
+light level 1

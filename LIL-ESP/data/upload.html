@@ -44,8 +44,8 @@
             <button class = "execute_button" onclick = "execute_request()">Execute</button>
         </div>
         <script>
-            var upload_base_path = "/upload/"
-            var execute_base_path = "/execute/"
+            var upload_base_path = "/upload/";
+            var execute_base_path = "/execute/";
 
             function upload_file() {
                 var file_input = document.getElementById("upload_input").files; 
@@ -54,6 +54,7 @@
 
                 xhttp.open("POST", upload_base_path + file_input[0].name, true);
                 xhttp.send(file_input[0]);
+                location.reload();
             }
 
             function execute_request() {
@@ -62,6 +63,7 @@
                 var xhttp = new XMLHttpRequest();
                 xhttp.open("POST", execute_base_path + file_name);
                 xhttp.send("Execute");
+                location.reload();
             }
         </script>
     </body>
